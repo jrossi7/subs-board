@@ -6,202 +6,165 @@
 <title>Subs — Production Board</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <style>
-  :root {
-    --red: #C0392B; --red-light: #FADBD8; --red-dark: #922B21;
-    --blue: #1A5276; --blue-light: #D6EAF8; --blue-dark: #154360;
-    --green: #1E8449; --green-light: #D5F5E3; --green-dark: #186A3B;
-    --purple: #6C3483; --purple-light: #E8DAEF; --purple-dark: #512E5F;
-    --gray: #2C3E50; --gray-light: #F2F3F4; --gray-mid: #BDC3C7;
-    --good: #1E8449; --warn: #D4AC0D; --bad: #C0392B;
-    --bg: #F0F3F4; --card: #FFFFFF;
-    --text: #1C2833; --muted: #717D7E;
-    --border: #D5D8DC;
-    --font: 'Segoe UI', Arial, sans-serif;
-  }
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { background: var(--bg); font-family: var(--font); color: var(--text); font-size: 13px; }
+:root{
+  --red:#C0392B;--red-l:#FADBD8;--red-d:#922B21;
+  --blue:#1A5276;--blue-l:#D6EAF8;--blue-d:#154360;
+  --green:#1E8449;--green-l:#D5F5E3;--green-d:#186A3B;
+  --purple:#6C3483;--purple-l:#E8DAEF;--purple-d:#512E5F;
+  --gray:#2C3E50;--gray-l:#F4F6F7;--gray-m:#BDC3C7;
+  --good:#1E8449;--warn:#D4AC0D;--bad:#C0392B;
+  --bg:#ECF0F1;--card:#fff;--text:#1C2833;--muted:#717D7E;--border:#D5D8DC;
+  --font:'Segoe UI',Arial,sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);font-family:var(--font);color:var(--text);font-size:13px;overflow:hidden;height:100vh}
+.hdr{background:var(--gray);color:#fff;padding:8px 14px;display:flex;align-items:center;justify-content:space-between;height:48px}
+.hdr-title{font-size:17px;font-weight:700;letter-spacing:1px}
+.hdr-sub{font-size:11px;opacity:.6;margin-top:1px}
+.hdr-right{display:flex;align-items:center;gap:10px}
+.stabs{display:flex;gap:4px}
+.stab{font-size:11px;padding:3px 10px;border-radius:20px;border:1px solid rgba(255,255,255,.3);background:transparent;color:#fff;cursor:pointer}
+.stab.active{background:rgba(255,255,255,.2);font-weight:700}
+.edit-btn{font-size:11px;padding:4px 12px;border-radius:5px;border:1px solid rgba(255,255,255,.4);background:rgba(255,255,255,.1);color:#fff;cursor:pointer;font-weight:600}
+.edit-btn:hover{background:rgba(255,255,255,.2)}
+.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;padding:10px;height:calc(100vh - 48px);overflow:hidden}
+.sec{background:var(--card);border-radius:8px;border:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden}
+.sec-hd{padding:8px 12px;display:flex;align-items:center;gap:7px;flex-shrink:0}
+.dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.lbl{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase}
+.sec-body{padding:10px 12px;overflow-y:auto;flex:1;display:flex;flex-direction:column;gap:8px}
+.safety .sec-hd{background:var(--red-l)}.safety .dot{background:var(--red)}.safety .lbl{color:var(--red-d)}
+.quality .sec-hd{background:var(--blue-l)}.quality .dot{background:var(--blue)}.quality .lbl{color:var(--blue-d)}
+.delivery .sec-hd{background:var(--green-l)}.delivery .dot{background:var(--green)}.delivery .lbl{color:var(--green-d)}
+.people .sec-hd{background:var(--purple-l)}.people .dot{background:var(--purple)}.people .lbl{color:var(--purple-d)}
+.r2{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.mc{background:var(--gray-l);border-radius:6px;padding:8px 10px}
+.ml{font-size:10px;color:var(--muted);margin-bottom:2px}
+.mv{font-size:21px;font-weight:700;line-height:1}
+.mt{font-size:10px;color:var(--muted);margin-top:2px}
+.mv.good{color:var(--good)}.mv.warn{color:var(--warn)}.mv.bad{color:var(--bad)}
+.clbl{font-size:10px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
+.div{border:none;border-top:1px solid var(--border)}
+.cross-wrap{display:flex;gap:10px;align-items:flex-start}
+.cross-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;width:105px;flex-shrink:0}
+.cross-grid > div{aspect-ratio:1;border-radius:2px;display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:700}
+.cc-e{background:transparent}.cc-s{background:#A9DFBF;color:#186A3B}.cc-i{background:#F1948A;color:#7B241C}.cc-n{background:#F9E79F;color:#7D6608}.cc-f{background:#EAECEE;color:#909497}
+.leg{display:flex;flex-direction:column;gap:4px;font-size:10px;color:var(--muted)}
+.li{display:flex;align-items:center;gap:4px}
+.ls{width:8px;height:8px;border-radius:1px;flex-shrink:0}
+.plist{display:flex;flex-direction:column;gap:4px}
+.pi{display:flex;align-items:center;gap:6px;font-size:11px;padding:5px 7px;border-radius:5px;background:var(--gray-l)}
+.pd{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+.pd-r{background:var(--bad)}.pd-a{background:var(--warn)}.pd-g{background:var(--good)}
+.pt{flex:1;color:var(--text)}.ptg{font-size:10px;color:var(--muted);white-space:nowrap}
+.bars{display:flex;flex-direction:column;gap:5px}
+.bi{display:flex;flex-direction:column;gap:2px}
+.blr{display:flex;justify-content:space-between}
+.bn{font-size:10px;color:var(--muted)}.bp{font-size:10px;font-weight:700}
+.bt{height:5px;border-radius:3px;background:var(--gray-m);overflow:hidden}
+.bf{height:100%;border-radius:3px}
+.bf-r{background:var(--bad)}.bf-a{background:var(--warn)}.bf-g{background:var(--good)}
+.sched{width:100%;border-collapse:collapse;font-size:10px;table-layout:fixed}
+.sched th{color:var(--muted);font-weight:600;padding:3px 3px;text-align:left;border-bottom:1px solid var(--border);font-size:9px;text-transform:uppercase}
+.sched td{padding:3px;border-bottom:1px solid var(--border)}
+.pill{font-size:10px;padding:2px 7px;border-radius:20px;font-weight:600;display:inline-block;white-space:nowrap}
+.pg{background:#D5F5E3;color:#186A3B}.pw{background:#FEF9E7;color:#7D6608}.pb{background:#FADBD8;color:#7B241C}.pi2{background:#EBF5FB;color:#1A5276}.ppur{background:var(--purple-l);color:var(--purple-d)}
+.av{width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;flex-shrink:0}
+.av-p{background:var(--purple-l);color:var(--purple-d)}.av-g{background:var(--green-l);color:var(--green-d)}
+.sk-p{display:flex;align-items:center;gap:6px}
+.sk-n{font-size:11px;width:55px;flex-shrink:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.sk-b{flex:1;height:6px;border-radius:3px;background:var(--gray-m);overflow:hidden}
+.sk-f{height:100%;border-radius:3px}
+.sk-pct{font-size:10px;color:var(--muted);width:28px;text-align:right}
 
-  .board-header {
-    background: var(--gray); color: #fff; padding: 10px 16px;
-    display: flex; align-items: center; justify-content: space-between;
-  }
-  .board-title { font-size: 18px; font-weight: 700; letter-spacing: 1px; }
-  .board-sub { font-size: 12px; opacity: 0.7; margin-top: 2px; }
-  .header-right { display: flex; align-items: center; gap: 14px; }
-  .shift-tabs { display: flex; gap: 4px; }
-  .stab { font-size: 11px; padding: 4px 12px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.3); background: transparent; color: #fff; cursor: pointer; }
-  .stab.active { background: rgba(255,255,255,0.2); font-weight: 700; }
-  .refresh-info { font-size: 11px; opacity: 0.6; }
-  .settings-btn { font-size: 11px; padding: 4px 10px; border-radius: 4px; border: 1px solid rgba(255,255,255,0.4); background: transparent; color: #fff; cursor: pointer; }
-
-  .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; padding: 10px; height: calc(100vh - 56px); }
-
-  .section { background: var(--card); border-radius: 8px; border: 1px solid var(--border); overflow: hidden; display: flex; flex-direction: column; }
-  .section-head { padding: 8px 12px; display: flex; align-items: center; gap: 8px; }
-  .section-head .dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
-  .section-head .label { font-size: 12px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }
-  .section-body { padding: 10px 12px; overflow-y: auto; flex: 1; display: flex; flex-direction: column; gap: 8px; }
-
-  .safety .section-head { background: var(--red-light); }
-  .safety .dot { background: var(--red); }
-  .safety .label { color: var(--red-dark); }
-  .quality .section-head { background: var(--blue-light); }
-  .quality .dot { background: var(--blue); }
-  .quality .label { color: var(--blue-dark); }
-  .delivery .section-head { background: var(--green-light); }
-  .delivery .dot { background: var(--green); }
-  .delivery .label { color: var(--green-dark); }
-  .people .section-head { background: var(--purple-light); }
-  .people .dot { background: var(--purple); }
-  .people .label { color: var(--purple-dark); }
-
-  .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
-  .mc { background: var(--gray-light); border-radius: 6px; padding: 8px 10px; }
-  .mc .ml { font-size: 10px; color: var(--muted); margin-bottom: 3px; }
-  .mc .mv { font-size: 22px; font-weight: 700; line-height: 1; }
-  .mc .mt { font-size: 10px; color: var(--muted); margin-top: 2px; }
-  .mv.good { color: var(--good); }
-  .mv.warn { color: var(--warn); }
-  .mv.bad { color: var(--bad); }
-
-  .clabel { font-size: 10px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: .05em; }
-  .divider { border: none; border-top: 1px solid var(--border); }
-
-  .cross-wrap { display: flex; gap: 10px; align-items: flex-start; }
-  .cross-grid { display: grid; grid-template-columns: repeat(7,1fr); grid-template-rows: repeat(7,1fr); gap: 2px; width: 112px; flex-shrink: 0; aspect-ratio: 1; }
-  .cc { border-radius: 2px; display: flex; align-items: center; justify-content: center; font-size: 8px; font-weight: 700; }
-  .cc-empty { background: transparent; }
-  .cc-safe { background: #A9DFBF; color: #186A3B; }
-  .cc-incident { background: #F1948A; color: #7B241C; }
-  .cc-nearmiss { background: #F9E79F; color: #7D6608; }
-  .cc-future { background: #EAECEE; color: #909497; }
-  .cross-legend { display: flex; flex-direction: column; gap: 4px; font-size: 10px; color: var(--muted); }
-  .cleg { display: flex; align-items: center; gap: 4px; }
-  .cleg-sq { width: 8px; height: 8px; border-radius: 1px; flex-shrink: 0; }
-
-  .plist { display: flex; flex-direction: column; gap: 4px; }
-  .pitem { display: flex; align-items: center; gap: 6px; font-size: 11px; padding: 5px 7px; border-radius: 5px; background: var(--gray-light); }
-  .pdot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
-  .pdot-r { background: var(--bad); }
-  .pdot-a { background: var(--warn); }
-  .pdot-g { background: var(--good); }
-  .ptext { flex: 1; color: var(--text); }
-  .ptag { font-size: 10px; color: var(--muted); white-space: nowrap; }
-
-  .bar-row { display: flex; flex-direction: column; gap: 5px; }
-  .bar-item { display: flex; flex-direction: column; gap: 2px; }
-  .bar-lr { display: flex; justify-content: space-between; }
-  .bar-n { font-size: 10px; color: var(--muted); }
-  .bar-p { font-size: 10px; font-weight: 700; color: var(--text); }
-  .bar-track { height: 5px; border-radius: 3px; background: var(--gray-mid); overflow: hidden; }
-  .bar-fill { height: 100%; border-radius: 3px; }
-  .bf-r { background: var(--bad); }
-  .bf-a { background: var(--warn); }
-  .bf-g { background: var(--good); }
-
-  .sched-table { width: 100%; border-collapse: collapse; font-size: 10px; table-layout: fixed; }
-  .sched-table th { color: var(--muted); font-weight: 600; padding: 3px 4px; text-align: left; border-bottom: 1px solid var(--border); font-size: 9px; text-transform: uppercase; }
-  .sched-table td { padding: 4px; border-bottom: 1px solid var(--border); color: var(--text); }
-
-  .pill { font-size: 10px; padding: 2px 7px; border-radius: 20px; font-weight: 600; display: inline-block; }
-  .pg { background: #D5F5E3; color: #186A3B; }
-  .pw { background: #FEF9E7; color: #7D6608; }
-  .pb { background: #FADBD8; color: #7B241C; }
-  .pi { background: #EBF5FB; color: #1A5276; }
-  .ppur { background: var(--purple-light); color: var(--purple-dark); }
-
-  .hol-item { display: flex; align-items: center; gap: 7px; font-size: 11px; padding: 5px 7px; border-radius: 5px; background: var(--gray-light); }
-  .av { width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 9px; font-weight: 700; flex-shrink: 0; }
-  .av-pur { background: var(--purple-light); color: var(--purple-dark); }
-  .av-grn { background: var(--green-light); color: var(--green-dark); }
-  .hol-name { flex: 1; }
-  .hol-days { font-size: 10px; color: var(--muted); }
-
-  .skill-person { display: flex; align-items: center; gap: 6px; }
-  .sp-name { font-size: 11px; width: 58px; flex-shrink: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  .sp-bar { flex: 1; height: 6px; border-radius: 3px; background: var(--gray-mid); overflow: hidden; }
-  .sp-fill { height: 100%; border-radius: 3px; }
-  .sp-pct { font-size: 10px; color: var(--muted); width: 30px; text-align: right; }
-
-  .settings-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 100; align-items: center; justify-content: center; }
-  .settings-overlay.open { display: flex; }
-  .settings-box { background: #fff; border-radius: 10px; padding: 24px; width: 440px; max-width: 95vw; }
-  .settings-box h2 { font-size: 16px; margin-bottom: 16px; color: var(--gray); }
-  .settings-box label { font-size: 12px; color: var(--muted); display: block; margin-bottom: 4px; }
-  .settings-box input { width: 100%; border: 1px solid var(--border); border-radius: 5px; padding: 8px 10px; font-size: 13px; margin-bottom: 12px; }
-  .settings-box .btns { display: flex; gap: 8px; justify-content: flex-end; }
-  .btn-save { background: var(--gray); color: #fff; border: none; border-radius: 5px; padding: 8px 18px; font-size: 13px; cursor: pointer; font-weight: 600; }
-  .btn-cancel { background: transparent; color: var(--muted); border: 1px solid var(--border); border-radius: 5px; padding: 8px 18px; font-size: 13px; cursor: pointer; }
-  .settings-box p { font-size: 11px; color: var(--muted); line-height: 1.5; margin-bottom: 12px; }
-
-  .status-banner { background: #FEF9E7; border: 1px solid #F9E79F; color: #7D6608; font-size: 11px; padding: 4px 10px; border-radius: 5px; text-align: center; }
-  .status-banner.ok { background: #D5F5E3; border-color: #A9DFBF; color: #186A3B; }
-  .status-banner.err { background: #FADBD8; border-color: #F1948A; color: #7B241C; }
+/* MODAL */
+.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:200;align-items:flex-start;justify-content:center;padding:20px;overflow-y:auto}
+.overlay.open{display:flex}
+.modal{background:#fff;border-radius:12px;width:100%;max-width:760px;max-height:90vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.3)}
+.modal-hdr{position:sticky;top:0;background:#fff;border-bottom:1px solid var(--border);padding:14px 20px;display:flex;align-items:center;justify-content:space-between;z-index:10}
+.modal-title{font-size:15px;font-weight:700;color:var(--gray)}
+.modal-close{background:none;border:none;font-size:20px;cursor:pointer;color:var(--muted);line-height:1}
+.modal-body{padding:20px}
+.tab-row{display:flex;gap:4px;margin-bottom:18px;border-bottom:1px solid var(--border);padding-bottom:0}
+.tab{font-size:12px;padding:6px 14px;border:none;background:none;cursor:pointer;color:var(--muted);border-bottom:2px solid transparent;margin-bottom:-1px;font-weight:500}
+.tab.active{color:var(--gray);border-bottom-color:var(--gray);font-weight:700}
+.tab-panel{display:none}.tab-panel.active{display:block}
+.fg{margin-bottom:12px}
+.fg label{display:block;font-size:11px;font-weight:600;color:var(--muted);margin-bottom:4px;text-transform:uppercase;letter-spacing:.04em}
+.fg input,.fg select,.fg textarea{width:100%;border:1px solid var(--border);border-radius:5px;padding:7px 9px;font-size:12px;color:var(--text);background:#fff;font-family:var(--font)}
+.fg textarea{resize:vertical;min-height:60px}
+.fg input:focus,.fg select:focus,.fg textarea:focus{outline:none;border-color:var(--blue)}
+.fg-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.fg-row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+.section-lbl{font-size:12px;font-weight:700;color:var(--gray);margin:14px 0 8px;padding-bottom:4px;border-bottom:1px solid var(--border)}
+.rep-row{display:grid;grid-template-columns:1fr 1fr 1fr auto;gap:6px;align-items:end;margin-bottom:6px}
+.rep-row3{display:grid;grid-template-columns:1fr 1fr 1fr auto;gap:6px;align-items:end;margin-bottom:6px}
+.add-btn{font-size:11px;color:var(--blue);background:none;border:1px dashed var(--blue);border-radius:5px;padding:5px 10px;cursor:pointer;margin-top:4px}
+.del-btn{background:#FADBD8;color:var(--bad);border:none;border-radius:5px;padding:6px 8px;cursor:pointer;font-size:12px;line-height:1;height:32px}
+.save-bar{position:sticky;bottom:0;background:#fff;border-top:1px solid var(--border);padding:12px 20px;display:flex;justify-content:flex-end;gap:8px}
+.btn-save{background:var(--gray);color:#fff;border:none;border-radius:6px;padding:8px 20px;font-size:13px;font-weight:700;cursor:pointer}
+.btn-save:hover{background:#1a252f}
+.btn-cancel{background:none;color:var(--muted);border:1px solid var(--border);border-radius:6px;padding:8px 16px;font-size:13px;cursor:pointer}
 </style>
 </head>
 <body>
 
-<div class="board-header">
+<div class="hdr">
   <div>
-    <div class="board-title">SUBS — Production Board</div>
-    <div class="board-sub" id="boardSub">Loading data...</div>
+    <div class="hdr-title">SUBS — Production Board</div>
+    <div class="hdr-sub" id="hdrSub">Loading...</div>
   </div>
-  <div class="header-right">
-    <div class="shift-tabs">
-      <button class="stab active" onclick="setSh(this,'Morning')">Morning</button>
-      <button class="stab" onclick="setSh(this,'Afternoon')">Afternoon</button>
-      <button class="stab" onclick="setSh(this,'Night')">Night</button>
+  <div class="hdr-right">
+    <div class="stabs">
+      <button class="stab active" onclick="setSh(this)">Morning</button>
+      <button class="stab" onclick="setSh(this)">Afternoon</button>
+      <button class="stab" onclick="setSh(this)">Night</button>
     </div>
-    <span class="refresh-info" id="refreshInfo">Refreshes every 5 min</span>
-    <button class="settings-btn" onclick="openSettings()">&#9881; Settings</button>
+    <button class="edit-btn" onclick="openModal()">✏ Update board</button>
   </div>
 </div>
 
 <div class="grid">
-  <!-- SAFETY -->
-  <div class="section safety">
-    <div class="section-head"><div class="dot"></div><span class="label">Safety</span></div>
-    <div class="section-body">
-      <div class="row2">
+  <div class="sec safety">
+    <div class="sec-hd"><div class="dot"></div><span class="lbl">Safety</span></div>
+    <div class="sec-body">
+      <div class="r2">
         <div class="mc"><div class="ml">Days without incident</div><div class="mv" id="s-days">—</div><div class="mt">Target: 60</div></div>
         <div class="mc"><div class="ml">Near misses (week)</div><div class="mv" id="s-nm">—</div><div class="mt">Target: 0</div></div>
       </div>
-      <div class="clabel">Safety cross — this week</div>
+      <div class="clbl">Safety cross — this week</div>
       <div class="cross-wrap">
         <div class="cross-grid" id="crossGrid"></div>
-        <div class="cross-legend">
-          <div class="cleg"><div class="cleg-sq" style="background:#A9DFBF"></div>Safe</div>
-          <div class="cleg"><div class="cleg-sq" style="background:#F1948A"></div>Incident</div>
-          <div class="cleg"><div class="cleg-sq" style="background:#F9E79F"></div>Near miss</div>
-          <div class="cleg"><div class="cleg-sq" style="background:#EAECEE"></div>Future</div>
+        <div class="leg">
+          <div class="li"><div class="ls" style="background:#A9DFBF"></div>Safe</div>
+          <div class="li"><div class="ls" style="background:#F1948A"></div>Incident</div>
+          <div class="li"><div class="ls" style="background:#F9E79F"></div>Near miss</div>
+          <div class="li"><div class="ls" style="background:#EAECEE"></div>Future</div>
         </div>
       </div>
-      <div class="divider"></div>
-      <div class="clabel">Training status</div>
-      <div class="plist" id="trainingList"></div>
-      <div class="divider"></div>
-      <div class="clabel">Open actions</div>
+      <div class="div"></div>
+      <div class="clbl">Training status</div>
+      <div class="plist" id="trainList"></div>
+      <div class="div"></div>
+      <div class="clbl">Open actions</div>
       <div class="plist" id="actionList"></div>
     </div>
   </div>
 
-  <!-- QUALITY -->
-  <div class="section quality">
-    <div class="section-head"><div class="dot"></div><span class="label">Quality</span></div>
-    <div class="section-body">
-      <div class="row2">
+  <div class="sec quality">
+    <div class="sec-hd"><div class="dot"></div><span class="lbl">Quality</span></div>
+    <div class="sec-body">
+      <div class="r2">
         <div class="mc"><div class="ml">Right first time</div><div class="mv" id="q-rft">—</div><div class="mt">Target: 97%</div></div>
         <div class="mc"><div class="ml">Defect rate (PPM)</div><div class="mv" id="q-ppm">—</div><div class="mt">Target: &lt;1,500</div></div>
       </div>
-      <div class="clabel">RFT trend — last 5 days</div>
-      <div style="position:relative;width:100%;height:80px">
-        <canvas id="rftChart" role="img" aria-label="RFT percentage trend last 5 days">RFT trend chart</canvas>
-      </div>
-      <div class="divider"></div>
-      <div class="clabel">Top defect types</div>
-      <div class="bar-row" id="defectBars"></div>
-      <div class="divider"></div>
-      <div class="row2">
+      <div class="clbl">RFT trend — last 5 days</div>
+      <div style="position:relative;width:100%;height:80px"><canvas id="rftChart"></canvas></div>
+      <div class="div"></div>
+      <div class="clbl">Top defect types</div>
+      <div class="bars" id="defectBars"></div>
+      <div class="div"></div>
+      <div class="r2">
         <div class="mc"><div class="ml">Wrong parts raised</div><div class="mv" id="q-wp">—</div><div class="mt">This week</div></div>
         <div class="mc"><div class="ml">Wrong parts kitted</div><div class="mv" id="q-wk">—</div><div class="mt">This week</div></div>
       </div>
@@ -209,361 +172,442 @@
     </div>
   </div>
 
-  <!-- DELIVERY -->
-  <div class="section delivery">
-    <div class="section-head"><div class="dot"></div><span class="label">Delivery</span></div>
-    <div class="section-body">
-      <div class="row2">
+  <div class="sec delivery">
+    <div class="sec-hd"><div class="dot"></div><span class="lbl">Delivery</span></div>
+    <div class="sec-body">
+      <div class="r2">
         <div class="mc"><div class="ml">On-time delivery</div><div class="mv" id="d-otd">—</div><div class="mt">Target: 95%</div></div>
         <div class="mc"><div class="ml">Backlog (units)</div><div class="mv" id="d-bl">—</div><div class="mt">Target: 0</div></div>
       </div>
-      <div class="clabel">Output vs target (units/hr)</div>
-      <div style="position:relative;width:100%;height:80px">
-        <canvas id="delivChart" role="img" aria-label="Hourly actual vs target output">Hourly output chart</canvas>
-      </div>
-      <div class="divider"></div>
-      <div class="clabel">Production schedule</div>
-      <table class="sched-table">
-        <thead><tr><th>Order</th><th>Product</th><th>Qty</th><th>Due</th><th>Status</th></tr></thead>
-        <tbody id="schedBody"></tbody>
-      </table>
-      <div style="display:flex;gap:5px;flex-wrap:wrap" id="schedSummary"></div>
+      <div class="clbl">Output vs target (units/hr)</div>
+      <div style="position:relative;width:100%;height:80px"><canvas id="delivChart"></canvas></div>
+      <div class="div"></div>
+      <div class="clbl">Production schedule</div>
+      <table class="sched"><thead><tr><th>Order</th><th>Product</th><th>Qty</th><th>Due</th><th>Status</th></tr></thead><tbody id="schedBody"></tbody></table>
+      <div style="display:flex;gap:5px;flex-wrap:wrap;margin-top:2px" id="schedSummary"></div>
     </div>
   </div>
 
-  <!-- PEOPLE -->
-  <div class="section people">
-    <div class="section-head"><div class="dot"></div><span class="label">People</span></div>
-    <div class="section-body">
-      <div class="row2">
+  <div class="sec people">
+    <div class="sec-hd"><div class="dot"></div><span class="lbl">People</span></div>
+    <div class="sec-body">
+      <div class="r2">
         <div class="mc"><div class="ml">Headcount today</div><div class="mv" id="p-hc">—</div><div class="mt" id="p-hc-sub">of team</div></div>
-        <div class="mc"><div class="ml">Skill matrix avg</div><div class="mv" id="p-skill">—</div><div class="mt">Target: 80%</div></div>
+        <div class="mc"><div class="ml">Skill matrix avg</div><div class="mv" id="p-sk">—</div><div class="mt">Target: 80%</div></div>
       </div>
-      <div class="clabel">Holiday this week</div>
+      <div class="clbl">Holiday this week</div>
       <div id="holList"></div>
-      <div class="divider"></div>
-      <div class="clabel">Training this week</div>
-      <div id="trainWeekList"></div>
-      <div class="divider"></div>
-      <div class="clabel">Skill matrix coverage</div>
+      <div class="div"></div>
+      <div class="clbl">Training this week</div>
+      <div id="trainWeek"></div>
+      <div class="div"></div>
+      <div class="clbl">Skill matrix</div>
       <div id="skillMatrix" style="display:flex;flex-direction:column;gap:5px"></div>
     </div>
   </div>
 </div>
 
-<!-- Settings -->
-<div class="settings-overlay" id="settingsOverlay">
-  <div class="settings-box">
-    <h2>&#9881; Board settings</h2>
-    <p>To connect this board to your Google Sheet, paste your <strong>Sheet ID</strong> below. Find it in your Sheet URL:<br>
-    <code style="font-size:11px;background:#f5f5f5;padding:2px 6px;border-radius:3px">docs.google.com/spreadsheets/d/<strong>SHEET_ID_HERE</strong>/edit</code></p>
-    <label>Google Sheet ID</label>
-    <input type="text" id="sheetIdInput" placeholder="e.g. 1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgVE2upms">
-    <label>Team / Line name</label>
-    <input type="text" id="teamNameInput" placeholder="e.g. Line 3 — Assembly">
-    <label>Refresh interval (minutes)</label>
-    <input type="number" id="refreshInput" value="5" min="1" max="60">
-    <div class="btns">
-      <button class="btn-cancel" onclick="closeSettings()">Cancel</button>
-      <button class="btn-save" onclick="saveSettings()">Save &amp; connect</button>
+<!-- EDIT MODAL -->
+<div class="overlay" id="overlay">
+<div class="modal">
+  <div class="modal-hdr">
+    <span class="modal-title">✏ Update production board</span>
+    <button class="modal-close" onclick="closeModal()">×</button>
+  </div>
+  <div class="modal-body">
+    <div class="tab-row">
+      <button class="tab active" onclick="showTab('safety')">Safety</button>
+      <button class="tab" onclick="showTab('quality')">Quality</button>
+      <button class="tab" onclick="showTab('delivery')">Delivery</button>
+      <button class="tab" onclick="showTab('people')">People</button>
+    </div>
+
+    <!-- SAFETY TAB -->
+    <div class="tab-panel active" id="tab-safety">
+      <div class="fg-row">
+        <div class="fg"><label>Days without incident</label><input type="number" id="f-days" min="0"></div>
+        <div class="fg"><label>Near misses this week</label><input type="number" id="f-nm" min="0"></div>
+      </div>
+      <div class="section-lbl">Safety cross — day status</div>
+      <div class="fg-row3" id="crossForm"></div>
+      <div class="section-lbl">Training status</div>
+      <div id="trainForm"></div>
+      <button class="add-btn" onclick="addTrain()">+ Add person</button>
+      <div class="section-lbl">Open actions</div>
+      <div id="actionForm"></div>
+      <button class="add-btn" onclick="addAction()">+ Add action</button>
+    </div>
+
+    <!-- QUALITY TAB -->
+    <div class="tab-panel" id="tab-quality">
+      <div class="fg-row">
+        <div class="fg"><label>Right first time %</label><input type="number" id="f-rft" step="0.1" min="0" max="100"></div>
+        <div class="fg"><label>Defect rate (PPM)</label><input type="number" id="f-ppm" min="0"></div>
+      </div>
+      <div class="fg-row">
+        <div class="fg"><label>Wrong parts raised</label><input type="number" id="f-wp" min="0"></div>
+        <div class="fg"><label>Wrong parts kitted</label><input type="number" id="f-wk" min="0"></div>
+      </div>
+      <div class="section-lbl">RFT trend — last 5 days</div>
+      <div id="rftForm"></div>
+      <div class="section-lbl">Top defect types</div>
+      <div id="defectForm"></div>
+      <button class="add-btn" onclick="addDefect()">+ Add defect type</button>
+      <div class="section-lbl">Wrong parts log</div>
+      <div id="partsForm"></div>
+      <button class="add-btn" onclick="addPart()">+ Add entry</button>
+    </div>
+
+    <!-- DELIVERY TAB -->
+    <div class="tab-panel" id="tab-delivery">
+      <div class="fg-row">
+        <div class="fg"><label>On-time delivery %</label><input type="number" id="f-otd" min="0" max="100"></div>
+        <div class="fg"><label>Backlog (units)</label><input type="number" id="f-bl" min="0"></div>
+      </div>
+      <div class="section-lbl">Hourly output vs target</div>
+      <div id="hourlyForm"></div>
+      <button class="add-btn" onclick="addHour()">+ Add hour</button>
+      <div class="section-lbl">Production schedule</div>
+      <div id="schedForm"></div>
+      <button class="add-btn" onclick="addSched()">+ Add order</button>
+    </div>
+
+    <!-- PEOPLE TAB -->
+    <div class="tab-panel" id="tab-people">
+      <div class="fg-row">
+        <div class="fg"><label>Headcount today</label><input type="number" id="f-hc" min="0"></div>
+        <div class="fg"><label>Total team size</label><input type="number" id="f-ts" min="0"></div>
+      </div>
+      <div class="section-lbl">Holiday this week</div>
+      <div id="holForm"></div>
+      <button class="add-btn" onclick="addHol()">+ Add person</button>
+      <div class="section-lbl">Training this week</div>
+      <div id="trainWeekForm"></div>
+      <button class="add-btn" onclick="addTrainWeek()">+ Add training</button>
+      <div class="section-lbl">Skill matrix (% per person)</div>
+      <div id="skillForm"></div>
+      <button class="add-btn" onclick="addSkill()">+ Add person</button>
     </div>
   </div>
+  <div class="save-bar">
+    <button class="btn-cancel" onclick="closeModal()">Cancel</button>
+    <button class="btn-save" onclick="saveAll()">Save & update board</button>
+  </div>
+</div>
 </div>
 
 <script>
-const DEMO = {
-  safety: {
-    days: 47, nearMisses: 2,
-    cross: ['safe','safe','safe','incident','future','future','future'],
-    training: [
-      {name:'Nicholas', module:'Fire safety', status:'complete'},
-      {name:'Ramos', module:'Manual handling', status:'overdue'},
-      {name:'Angelo', module:'COSHH', status:'due'}
-    ],
-    actions: [
-      {desc:'Guard missing — press #4', status:'open', age:'2d'},
-      {desc:'Spill procedure update', status:'pending', age:'5d'}
-    ]
+const DKEY = 'subsBoardData_v2';
+
+const DEFAULT = {
+  safety:{days:47,nm:2,
+    cross:[{day:'Monday',status:'safe'},{day:'Tuesday',status:'safe'},{day:'Wednesday',status:'safe'},{day:'Thursday',status:'incident'},{day:'Friday',status:'future'},{day:'Saturday',status:'future'},{day:'Sunday',status:'future'}],
+    training:[{name:'Nicholas',module:'Fire safety',status:'complete'},{name:'Ramos',module:'Manual handling',status:'overdue'},{name:'Angelo',module:'COSHH',status:'due'}],
+    actions:[{desc:'Guard missing — press #4',status:'open',age:'2d'},{desc:'Spill procedure update',status:'pending',age:'5d'}]
   },
-  quality: {
-    rft: 97.2, ppm: 1840,
-    rftTrend: [{day:'Mon',val:96.1},{day:'Tue',val:96.8},{day:'Wed',val:97.5},{day:'Thu',val:97.2},{day:'Fri',val:97.2}],
-    defects: [{name:'Surface scratch',pct:38},{name:'Dimension OOS',pct:27},{name:'Assembly gap',pct:19},{name:'Other',pct:16}],
-    wrongParts: 5, wrongKitted: 3,
-    partsLog: [{pn:'P/N 4472',issue:'Wrong revision kitted',date:'Today'},{pn:'P/N 8831',issue:'Wrong qty issued',date:'Yesterday'}]
+  quality:{rft:97.2,ppm:1840,wp:5,wk:3,
+    rftTrend:[{day:'Mon',val:96.1},{day:'Tue',val:96.8},{day:'Wed',val:97.5},{day:'Thu',val:97.2},{day:'Fri',val:97.2}],
+    defects:[{name:'Surface scratch',pct:38},{name:'Dimension OOS',pct:27},{name:'Assembly gap',pct:19},{name:'Other',pct:16}],
+    parts:[{pn:'P/N 4472',issue:'Wrong revision kitted',date:'Today'},{pn:'P/N 8831',issue:'Wrong qty issued',date:'Yesterday'}]
   },
-  delivery: {
-    otd: 91, backlog: 18,
-    hourly: [{h:'06h',actual:48,target:55},{h:'07h',actual:52,target:55},{h:'08h',actual:55,target:55},{h:'09h',actual:49,target:55},{h:'10h',actual:53,target:55},{h:'11h',actual:50,target:55}],
-    schedule: [
-      {wo:'WO-0441',prod:'Assy A',qty:120,due:'Mon',status:'done'},
-      {wo:'WO-0442',prod:'Assy B',qty:80,due:'Tue',status:'done'},
-      {wo:'WO-0443',prod:'Assy C',qty:200,due:'Thu',status:'in progress'},
-      {wo:'WO-0444',prod:'Assy A',qty:60,due:'Fri',status:'planned'},
-      {wo:'WO-0439',prod:'Assy D',qty:45,due:'Mon',status:'backlog'},
-    ]
+  delivery:{otd:91,bl:18,
+    hourly:[{h:'06h',actual:48,target:55},{h:'07h',actual:52,target:55},{h:'08h',actual:55,target:55},{h:'09h',actual:49,target:55},{h:'10h',actual:53,target:55},{h:'11h',actual:50,target:55}],
+    schedule:[{wo:'WO-0441',prod:'Assy A',qty:120,due:'Mon',status:'done'},{wo:'WO-0442',prod:'Assy B',qty:80,due:'Tue',status:'done'},{wo:'WO-0443',prod:'Assy C',qty:200,due:'Thu',status:'in progress'},{wo:'WO-0444',prod:'Assy A',qty:60,due:'Fri',status:'planned'},{wo:'WO-0439',prod:'Assy D',qty:45,due:'Mon',status:'backlog'}]
   },
-  people: {
-    headcount: 2, teamSize: 3,
-    holidays: [{name:'Nicholas',days:'Mon – Fri'},{name:'Ramos',days:'Wed – Fri'}],
-    trainingWeek: [{name:'Ramos',module:'Manual handling',day:'Tue'},{name:'Angelo',module:'Lean basics',day:'Wed'},{name:'Nicholas',module:'QC inspection',day:'Thu'}],
-    skillMatrix: [{name:'Nicholas',pct:82},{name:'Ramos',pct:63},{name:'Angelo',pct:65}]
+  people:{hc:2,ts:3,
+    holidays:[{name:'Nicholas',days:'Mon – Fri'},{name:'Ramos',days:'Wed – Fri'}],
+    trainWeek:[{name:'Ramos',module:'Manual handling',day:'Tue'},{name:'Angelo',module:'Lean basics',day:'Wed'},{name:'Nicholas',module:'QC inspection',day:'Thu'}],
+    skills:[{name:'Nicholas',pct:82},{name:'Ramos',pct:63},{name:'Angelo',pct:65}]
   }
 };
 
-let settings = JSON.parse(localStorage.getItem('prodBoardSettings') || '{}');
-let rftChartInst = null, delivChartInst = null;
-let refreshTimer = null;
+let D = JSON.parse(localStorage.getItem(DKEY)||'null') || JSON.parse(JSON.stringify(DEFAULT));
+let rftInst=null, delivInst=null;
 
-function openSettings(){ document.getElementById('settingsOverlay').classList.add('open'); document.getElementById('sheetIdInput').value = settings.sheetId||''; document.getElementById('teamNameInput').value = settings.teamName||'Subs'; document.getElementById('refreshInput').value = settings.refreshMins||5; }
-function closeSettings(){ document.getElementById('settingsOverlay').classList.remove('open'); }
-function saveSettings(){
-  settings.sheetId = document.getElementById('sheetIdInput').value.trim();
-  settings.teamName = document.getElementById('teamNameInput').value.trim()||'Subs';
-  settings.refreshMins = parseInt(document.getElementById('refreshInput').value)||5;
-  localStorage.setItem('prodBoardSettings', JSON.stringify(settings));
-  closeSettings();
-  startRefresh();
-}
-function setSh(btn, name){ document.querySelectorAll('.stab').forEach(b=>b.classList.remove('active')); btn.classList.add('active'); }
+function g(id){return document.getElementById(id)}
+function ini(n){return n.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2)}
+function cc(v,good,warn){return v>=good?'good':v>=warn?'warn':'bad'}
 
-function colorClass(val, good, warn){
-  if(val >= good) return 'good';
-  if(val >= warn) return 'warn';
-  return 'bad';
-}
-function statusPill(st){
-  const m = {done:'pg',complete:'pg','in progress':'pw',planned:'pi',backlog:'pb',overdue:'pb',due:'pw',open:'pb',pending:'pw',closed:'pg'};
-  return `<span class="pill ${m[st.toLowerCase()]||'pi'}">${st}</span>`;
-}
-function initials(name){ return name.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2); }
+function render(){
+  const now=new Date();
+  g('hdrSub').textContent=`Subs — ${now.toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short',year:'numeric'})}`;
 
-function renderData(d){
-  const s = d.safety, q = d.quality, del = d.delivery, p = d.people;
+  const s=D.safety,q=D.quality,d=D.delivery,p=D.people;
 
-  const el = id => document.getElementById(id);
-  el('s-days').textContent = s.days;
-  el('s-days').className = 'mv ' + colorClass(s.days, 40, 20);
-  el('s-nm').textContent = s.nearMisses;
-  el('s-nm').className = 'mv ' + (s.nearMisses === 0 ? 'good' : s.nearMisses <= 2 ? 'warn' : 'bad');
+  g('s-days').textContent=s.days; g('s-days').className='mv '+cc(s.days,40,20);
+  g('s-nm').textContent=s.nm; g('s-nm').className='mv '+(s.nm===0?'good':s.nm<=2?'warn':'bad');
 
-  const crossData = [[0,0,1,1,1,0,0],[0,0,1,1,1,0,0],[1,1,1,1,1,1,1],[1,1,1,1,1,1,1],[1,1,1,1,1,1,1],[0,0,1,1,1,0,0],[0,0,1,1,1,0,0]];
-  const dayRow = 3;
-  const cg = el('crossGrid'); cg.innerHTML = '';
-  const dayLabels = ['M','T','W','T','F','S','S'];
-  for(let r=0;r<7;r++){
-    for(let c=0;c<7;c++){
-      const div = document.createElement('div');
-      if(!crossData[r][c]){ div.className='cc cc-empty'; }
-      else {
-        const st = r===dayRow ? (s.cross[c]||'future') : (r<dayRow ? 'safe' : 'future');
-        const cls = {safe:'cc-safe',incident:'cc-incident','near miss':'cc-nearmiss',future:'cc-future'}[st]||'cc-future';
-        div.className = 'cc '+cls;
-        if(r===3) div.textContent = dayLabels[c];
-      }
-      cg.appendChild(div);
+  const cMap={safe:'cc-s',incident:'cc-i','near miss':'cc-n',future:'cc-f'};
+  const shape=[[0,0,1,1,1,0,0],[0,0,1,1,1,0,0],[1,1,1,1,1,1,1],[1,1,1,1,1,1,1],[1,1,1,1,1,1,1],[0,0,1,1,1,0,0],[0,0,1,1,1,0,0]];
+  const cg=g('crossGrid'); cg.innerHTML='';
+  const dayLabels=['M','T','W','T','F','S','S'];
+  for(let r=0;r<7;r++) for(let c=0;c<7;c++){
+    const el=document.createElement('div');
+    if(!shape[r][c]){el.className='cc-e';}
+    else{
+      const st=r===3?(s.cross[c]?.status||'future'):(r<3?'safe':'future');
+      el.className=cMap[st]||'cc-f';
+      if(r===3)el.textContent=dayLabels[c];
     }
+    cg.appendChild(el);
   }
 
-  const tl = el('trainingList'); tl.innerHTML = '';
+  const tl=g('trainList'); tl.innerHTML='';
   (s.training||[]).forEach(t=>{
-    const dot = t.status==='complete'?'pdot-g':t.status==='overdue'?'pdot-r':'pdot-a';
-    const tag = t.status==='complete'?'Complete':t.status==='overdue'?'Overdue':'Due soon';
-    tl.innerHTML += `<div class="pitem"><div class="pdot ${dot}"></div><span class="ptext">${t.name} — ${t.module}</span><span class="ptag">${tag}</span></div>`;
+    const d2=t.status==='complete'?'pd-g':t.status==='overdue'?'pd-r':'pd-a';
+    const tag=t.status==='complete'?'Complete':t.status==='overdue'?'Overdue':'Due soon';
+    tl.innerHTML+=`<div class="pi"><div class="pd ${d2}"></div><span class="pt">${t.name} — ${t.module}</span><span class="ptg">${tag}</span></div>`;
   });
 
-  const al = el('actionList'); al.innerHTML = '';
+  const al=g('actionList'); al.innerHTML='';
   (s.actions||[]).forEach(a=>{
-    const dot = a.status==='open'?'pdot-r':a.status==='pending'?'pdot-a':'pdot-g';
-    al.innerHTML += `<div class="pitem"><div class="pdot ${dot}"></div><span class="ptext">${a.desc}</span><span class="ptag">${a.age||a.status}</span></div>`;
+    const d2=a.status==='open'?'pd-r':a.status==='pending'?'pd-a':'pd-g';
+    al.innerHTML+=`<div class="pi"><div class="pd ${d2}"></div><span class="pt">${a.desc}</span><span class="ptg">${a.age||a.status}</span></div>`;
   });
 
-  el('q-rft').textContent = q.rft + '%';
-  el('q-rft').className = 'mv ' + colorClass(q.rft, 97, 95);
-  el('q-ppm').textContent = Number(q.ppm).toLocaleString();
-  el('q-ppm').className = 'mv ' + (q.ppm < 1500 ? 'good' : q.ppm < 2000 ? 'warn' : 'bad');
+  g('q-rft').textContent=q.rft+'%'; g('q-rft').className='mv '+cc(q.rft,97,95);
+  g('q-ppm').textContent=Number(q.ppm).toLocaleString(); g('q-ppm').className='mv '+(q.ppm<1500?'good':q.ppm<2000?'warn':'bad');
 
-  const rftLabels = (q.rftTrend||[]).map(x=>x.day);
-  const rftVals = (q.rftTrend||[]).map(x=>parseFloat(x.val));
-  const rftTargets = rftLabels.map(()=>97);
-  if(rftChartInst){ rftChartInst.destroy(); }
-  rftChartInst = new Chart(el('rftChart'),{
-    type:'line',
-    data:{labels:rftLabels,datasets:[
-      {label:'RFT',data:rftVals,borderColor:'#1A5276',backgroundColor:'rgba(26,82,118,0.07)',tension:.35,fill:true,pointRadius:3,pointBackgroundColor:'#1A5276'},
-      {label:'Target',data:rftTargets,borderColor:'#1E8449',borderDash:[4,3],pointRadius:0}
-    ]},
-    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
-      scales:{x:{ticks:{color:'#717D7E',font:{size:9}},grid:{display:false}},y:{min:94,max:100,ticks:{color:'#717D7E',font:{size:9},callback:v=>v+'%'},grid:{color:'rgba(0,0,0,0.05)'}}}}
+  if(rftInst)rftInst.destroy();
+  rftInst=new Chart(g('rftChart'),{type:'line',data:{labels:(q.rftTrend||[]).map(x=>x.day),datasets:[
+    {data:(q.rftTrend||[]).map(x=>parseFloat(x.val)),borderColor:'#1A5276',backgroundColor:'rgba(26,82,118,0.07)',tension:.35,fill:true,pointRadius:3,pointBackgroundColor:'#1A5276'},
+    {data:(q.rftTrend||[]).map(()=>97),borderColor:'#1E8449',borderDash:[4,3],pointRadius:0}
+  ]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{color:'#717D7E',font:{size:9}},grid:{display:false}},y:{min:94,max:100,ticks:{color:'#717D7E',font:{size:9},callback:v=>v+'%'},grid:{color:'rgba(0,0,0,0.05)'}}}}});
+
+  const db=g('defectBars'); db.innerHTML='';
+  (q.defects||[]).forEach((d2,i)=>{
+    const cls=i===0?'bf-r':i===1?'bf-a':'bf-g';
+    db.innerHTML+=`<div class="bi"><div class="blr"><span class="bn">${d2.name}</span><span class="bp">${d2.pct}%</span></div><div class="bt"><div class="bf ${cls}" style="width:${d2.pct}%"></div></div></div>`;
   });
 
-  const db = el('defectBars'); db.innerHTML = '';
-  const maxDef = Math.max(...(q.defects||[]).map(x=>x.pct));
-  (q.defects||[]).forEach((d,i)=>{
-    const cls = i===0?'bf-r':i===1?'bf-a':'bf-g';
-    db.innerHTML += `<div class="bar-item"><div class="bar-lr"><span class="bar-n">${d.name}</span><span class="bar-p">${d.pct}%</span></div><div class="bar-track"><div class="bar-fill ${cls}" style="width:${d.pct}%"></div></div></div>`;
+  g('q-wp').textContent=q.wp; g('q-wp').className='mv '+(q.wp===0?'good':q.wp<=3?'warn':'bad');
+  g('q-wk').textContent=q.wk; g('q-wk').className='mv '+(q.wk===0?'good':q.wk<=2?'warn':'bad');
+  const pl=g('partsLog'); pl.innerHTML='';
+  (q.parts||[]).forEach(p2=>{pl.innerHTML+=`<div class="pi"><div class="pd pd-r"></div><span class="pt">${p2.pn} — ${p2.issue}</span><span class="ptg">${p2.date}</span></div>`;});
+
+  g('d-otd').textContent=d.otd+'%'; g('d-otd').className='mv '+cc(d.otd,95,85);
+  g('d-bl').textContent=d.bl; g('d-bl').className='mv '+(d.bl===0?'good':d.bl<=10?'warn':'bad');
+
+  if(delivInst)delivInst.destroy();
+  delivInst=new Chart(g('delivChart'),{type:'bar',data:{labels:(d.hourly||[]).map(x=>x.h),datasets:[
+    {data:(d.hourly||[]).map(x=>x.actual),backgroundColor:'#A9DFBF',borderRadius:2},
+    {data:(d.hourly||[]).map(x=>x.target),backgroundColor:'rgba(30,132,73,0.18)',borderRadius:2}
+  ]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{color:'#717D7E',font:{size:9}},grid:{display:false}},y:{min:30,ticks:{color:'#717D7E',font:{size:9}},grid:{color:'rgba(0,0,0,0.05)'}}}}});
+
+  const sb=g('schedBody'); sb.innerHTML='';
+  const counts={done:0,'in progress':0,planned:0,backlog:0};
+  const pm={done:'pg','in progress':'pw',planned:'pi2',backlog:'pb'};
+  (d.schedule||[]).forEach(row=>{
+    const st=(row.status||'').toLowerCase(); counts[st]=(counts[st]||0)+1;
+    sb.innerHTML+=`<tr><td>${row.wo}</td><td>${row.prod}</td><td>${row.qty}</td><td>${row.due}</td><td><span class="pill ${pm[st]||'pi2'}">${row.status}</span></td></tr>`;
   });
+  const ss=g('schedSummary'); ss.innerHTML='';
+  Object.entries(counts).forEach(([k,v])=>{if(v>0)ss.innerHTML+=`<span class="pill ${pm[k]||'pi2'}">${k}: ${v}</span>`;});
 
-  el('q-wp').textContent = q.wrongParts;
-  el('q-wp').className = 'mv ' + (q.wrongParts===0?'good':q.wrongParts<=3?'warn':'bad');
-  el('q-wk').textContent = q.wrongKitted;
-  el('q-wk').className = 'mv ' + (q.wrongKitted===0?'good':q.wrongKitted<=2?'warn':'bad');
+  g('p-hc').textContent=p.hc; g('p-hc').className='mv '+(p.hc>=p.ts?'good':p.hc>=p.ts*.8?'warn':'bad');
+  g('p-hc-sub').textContent='of '+p.ts+' on team';
+  const avg=p.skills.length?Math.round(p.skills.reduce((a,b)=>a+b.pct,0)/p.skills.length):0;
+  g('p-sk').textContent=avg+'%'; g('p-sk').className='mv '+cc(avg,80,60);
 
-  const pl = el('partsLog'); pl.innerHTML = '';
-  (q.partsLog||[]).forEach(p=>{
-    pl.innerHTML += `<div class="pitem"><div class="pdot pdot-r"></div><span class="ptext">${p.pn} — ${p.issue}</span><span class="ptag">${p.date}</span></div>`;
-  });
+  const hl=g('holList'); hl.innerHTML='';
+  if(!p.holidays||!p.holidays.length){hl.innerHTML='<div style="font-size:11px;color:var(--muted)">No holidays this week</div>';}
+  else p.holidays.forEach(h=>{hl.innerHTML+=`<div class="pi"><div class="av av-p">${ini(h.name)}</div><span class="pt">${h.name}</span><span class="ptg">${h.days}</span></div>`;});
 
-  el('d-otd').textContent = del.otd + '%';
-  el('d-otd').className = 'mv ' + colorClass(del.otd, 95, 85);
-  el('d-bl').textContent = del.backlog;
-  el('d-bl').className = 'mv ' + (del.backlog===0?'good':del.backlog<=10?'warn':'bad');
+  const tw=g('trainWeek'); tw.innerHTML='';
+  if(!p.trainWeek||!p.trainWeek.length){tw.innerHTML='<div style="font-size:11px;color:var(--muted)">No training this week</div>';}
+  else p.trainWeek.forEach(t=>{tw.innerHTML+=`<div class="pi"><div class="av av-g">${ini(t.name)}</div><span class="pt">${t.name}</span><span class="ptg">${t.module} — ${t.day}</span></div>`;});
 
-  const hLabels = (del.hourly||[]).map(x=>x.h);
-  const hActual = (del.hourly||[]).map(x=>x.actual);
-  const hTarget = (del.hourly||[]).map(x=>x.target);
-  if(delivChartInst){ delivChartInst.destroy(); }
-  delivChartInst = new Chart(el('delivChart'),{
-    type:'bar',
-    data:{labels:hLabels,datasets:[
-      {label:'Actual',data:hActual,backgroundColor:'#A9DFBF',borderRadius:2},
-      {label:'Target',data:hTarget,backgroundColor:'rgba(30,132,73,0.18)',borderRadius:2}
-    ]},
-    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
-      scales:{x:{ticks:{color:'#717D7E',font:{size:9}},grid:{display:false}},y:{min:30,ticks:{color:'#717D7E',font:{size:9}},grid:{color:'rgba(0,0,0,0.05)'}}}}
-  });
-
-  const sb = el('schedBody'); sb.innerHTML = '';
-  const counts = {done:0,'in progress':0,planned:0,backlog:0};
-  (del.schedule||[]).forEach(row=>{
-    const st = (row.status||'').toLowerCase();
-    counts[st] = (counts[st]||0)+1;
-    sb.innerHTML += `<tr><td>${row.wo}</td><td>${row.prod}</td><td>${row.qty}</td><td>${row.due}</td><td>${statusPill(row.status)}</td></tr>`;
-  });
-  const ss = el('schedSummary'); ss.innerHTML = '';
-  const pillMap = {done:'pg','in progress':'pw',planned:'pi',backlog:'pb'};
-  Object.entries(counts).forEach(([k,v])=>{ if(v>0) ss.innerHTML+=`<span class="pill ${pillMap[k]||'pi'}">${k}: ${v}</span>`; });
-
-  el('p-hc').textContent = p.headcount;
-  el('p-hc').className = 'mv ' + (p.headcount >= p.teamSize ? 'good' : p.headcount >= p.teamSize*0.8 ? 'warn' : 'bad');
-  el('p-hc-sub').textContent = 'of ' + p.teamSize + ' on team';
-
-  const avgSkill = p.skillMatrix.length ? Math.round(p.skillMatrix.reduce((a,b)=>a+b.pct,0)/p.skillMatrix.length) : 0;
-  el('p-skill').textContent = avgSkill + '%';
-  el('p-skill').className = 'mv ' + colorClass(avgSkill, 80, 60);
-
-  const hl = el('holList'); hl.innerHTML = '';
-  if(!p.holidays||p.holidays.length===0){ hl.innerHTML='<div style="font-size:11px;color:var(--muted);padding:4px 0">No holidays this week</div>'; }
-  else (p.holidays||[]).forEach(h=>{
-    hl.innerHTML += `<div class="hol-item"><div class="av av-pur">${initials(h.name)}</div><span class="hol-name">${h.name}</span><span class="hol-days">${h.days}</span></div>`;
-  });
-
-  const twl = el('trainWeekList'); twl.innerHTML = '';
-  if(!p.trainingWeek||p.trainingWeek.length===0){ twl.innerHTML='<div style="font-size:11px;color:var(--muted);padding:4px 0">No training scheduled</div>'; }
-  else (p.trainingWeek||[]).forEach(t=>{
-    twl.innerHTML += `<div class="hol-item"><div class="av av-grn">${initials(t.name)}</div><span class="hol-name">${t.name}</span><span class="hol-days">${t.module} — ${t.day}</span></div>`;
-  });
-
-  const sm = el('skillMatrix'); sm.innerHTML = '';
-  (p.skillMatrix||[]).forEach(person=>{
-    const col = person.pct>=80?'#1E8449':person.pct>=60?'#D4AC0D':'#C0392B';
-    sm.innerHTML += `<div class="skill-person"><span class="sp-name">${person.name}</span><div class="sp-bar"><div class="sp-fill" style="width:${person.pct}%;background:${col}"></div></div><span class="sp-pct">${person.pct}%</span></div>`;
+  const sm=g('skillMatrix'); sm.innerHTML='';
+  (p.skills||[]).forEach(sk=>{
+    const col=sk.pct>=80?'#1E8449':sk.pct>=60?'#D4AC0D':'#C0392B';
+    sm.innerHTML+=`<div class="sk-p"><span class="sk-n">${sk.name}</span><div class="sk-b"><div class="sk-f" style="width:${sk.pct}%;background:${col}"></div></div><span class="sk-pct">${sk.pct}%</span></div>`;
   });
 }
 
-async function fetchFromSheets(sheetId){
-  const tabs = ['Safety','Quality','Delivery','People'];
-  const results = {};
-  for(const tab of tabs){
-    const url = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:csv&sheet=${tab}`;
-    const res = await fetch(url);
-    if(!res.ok) throw new Error('Could not load sheet: '+tab);
-    results[tab] = await res.text();
-  }
-  return parseSheets(results);
+function setSh(btn){document.querySelectorAll('.stab').forEach(b=>b.classList.remove('active'));btn.classList.add('active');}
+
+function showTab(name){
+  document.querySelectorAll('.tab').forEach((t,i)=>{const tabs=['safety','quality','delivery','people'];t.classList.toggle('active',tabs[i]===name);});
+  document.querySelectorAll('.tab-panel').forEach(p=>{p.classList.remove('active');});
+  g('tab-'+name).classList.add('active');
 }
 
-function parseCSV(text){
-  return text.trim().split('\n').map(row=>{
-    const cells = []; let cur='', inQ=false;
-    for(let i=0;i<row.length;i++){
-      const ch=row[i];
-      if(ch==='"'){ inQ=!inQ; }
-      else if(ch===','&&!inQ){ cells.push(cur.trim()); cur=''; }
-      else cur+=ch;
-    }
-    cells.push(cur.trim()); return cells;
+function row(html){const d=document.createElement('div');d.style.cssText='display:grid;gap:6px;align-items:end;margin-bottom:6px';d.innerHTML=html;return d;}
+
+function fld(label,val,type='text',extra=''){return `<div class="fg" style="margin:0"><label>${label}</label><input type="${type}" value="${val||''}" ${extra}></div>`;}
+
+function delBtn(fn){return `<div class="fg" style="margin:0"><label>&nbsp;</label><button class="del-btn" onclick="${fn}">✕</button></div>`;}
+
+function openModal(){
+  const s=D.safety,q=D.quality,d=D.delivery,p=D.people;
+  g('f-days').value=s.days; g('f-nm').value=s.nm;
+
+  const cf=g('crossForm'); cf.innerHTML='';
+  const opts=['safe','incident','near miss','future'];
+  (s.cross||[]).forEach((c,i)=>{
+    const d2=document.createElement('div');d2.className='fg';d2.style.margin='0';
+    d2.innerHTML=`<label>${c.day}</label><select data-cross="${i}">${opts.map(o=>`<option value="${o}"${o===c.status?' selected':''}>${o}</option>`).join('')}</select>`;
+    cf.appendChild(d2);
   });
+
+  const tf=g('trainForm'); tf.innerHTML='';
+  (s.training||[]).forEach((t,i)=>{
+    const r=document.createElement('div');r.style.cssText='display:grid;grid-template-columns:1fr 1fr 1fr auto;gap:6px;align-items:end;margin-bottom:6px';
+    r.innerHTML=fld('Name',t.name)+fld('Module',t.module)+`<div class="fg" style="margin:0"><label>Status</label><select data-ti="${i}"><option value="complete"${t.status==='complete'?' selected':''}>Complete</option><option value="due"${t.status==='due'?' selected':''}>Due soon</option><option value="overdue"${t.status==='overdue'?' selected':''}>Overdue</option></select></div>`+delBtn(`delTrain(${i})`);
+    r.querySelectorAll('input')[0].dataset.tn=i; r.querySelectorAll('input')[1].dataset.tm=i;
+    tf.appendChild(r);
+  });
+
+  const af=g('actionForm'); af.innerHTML='';
+  (s.actions||[]).forEach((a,i)=>{
+    const r=document.createElement('div');r.style.cssText='display:grid;grid-template-columns:1fr 1fr 1fr auto;gap:6px;align-items:end;margin-bottom:6px';
+    r.innerHTML=fld('Description',a.desc)+fld('Age/Date',a.age)+`<div class="fg" style="margin:0"><label>Status</label><select data-ai="${i}"><option value="open"${a.status==='open'?' selected':''}>Open</option><option value="pending"${a.status==='pending'?' selected':''}>Pending</option><option value="closed"${a.status==='closed'?' selected':''}>Closed</option></select></div>`+delBtn(`delAction(${i})`);
+    r.querySelectorAll('input')[0].dataset.ad=i; r.querySelectorAll('input')[1].dataset.aa=i;
+    af.appendChild(r);
+  });
+
+  g('f-rft').value=q.rft; g('f-ppm').value=q.ppm; g('f-wp').value=q.wp; g('f-wk').value=q.wk;
+
+  const rf=g('rftForm'); rf.innerHTML='';
+  (q.rftTrend||[]).forEach((t,i)=>{
+    const r=document.createElement('div');r.style.cssText='display:grid;grid-template-columns:1fr 1fr auto;gap:6px;align-items:end;margin-bottom:6px';
+    r.innerHTML=fld('Day',t.day)+fld('RFT %',t.val,'number')+delBtn(`delRft(${i})`);
+    r.querySelectorAll('input')[0].dataset.rd=i; r.querySelectorAll('input')[1].dataset.rv=i;
+    rf.appendChild(r);
+  });
+
+  const df=g('defectForm'); df.innerHTML='';
+  (q.defects||[]).forEach((def,i)=>{
+    const r=document.createElement('div');r.style.cssText='display:grid;grid-template-columns:1fr 1fr auto;gap:6px;align-items:end;margin-bottom:6px';
+    r.innerHTML=fld('Defect type',def.name)+fld('Count %',def.pct,'number')+delBtn(`delDefect(${i})`);
+    r.querySelectorAll('input')[0].dataset.dfn=i; r.querySelectorAll('input')[1].dataset.dfp=i;
+    df.appendChild(r);
+  });
+
+  const pf=g('partsForm'); pf.innerHTML='';
+  (q.parts||[]).forEach((pt,i)=>{
+    const r=document.createElement('div');r.style.cssText='display:grid;grid-template-columns:1fr 1fr 1fr auto;gap:6px;align-items:end;margin-bottom:6px';
+    r.innerHTML=fld('Part number',pt.pn)+fld('Issue',pt.issue)+fld('Date',pt.date)+delBtn(`delPart(${i})`);
+    r.querySelectorAll('input')[0].dataset.ppn=i; r.querySelectorAll('input')[1].dataset.ppi=i; r.querySelectorAll('input')[2].dataset.ppd=i;
+    pf.appendChild(r);
+  });
+
+  g('f-otd').value=d.otd; g('f-bl').value=d.bl;
+
+  const hf=g('hourlyForm'); hf.innerHTML='';
+  (d.hourly||[]).forEach((h,i)=>{
+    const r=document.createElement('div');r.style.cssText='display:grid;grid-template-columns:1fr 1fr 1fr auto;gap:6px;align-items:end;margin-bottom:6px';
+    r.innerHTML=fld('Hour',h.h)+fld('Actual',h.actual,'number')+fld('Target',h.target,'number')+delBtn(`delHour(${i})`);
+    r.querySelectorAll('input')[0].dataset.hh=i; r.querySelectorAll('input')[1].dataset.ha=i; r.querySelectorAll('input')[2].dataset.ht=i;
+    hf.appendChild(r);
+  });
+
+  const scf=g('schedForm'); scf.innerHTML='';
+  const scOpts=['done','in progress','planned','backlog'];
+  (d.schedule||[]).forEach((sc,i)=>{
+    const r=document.createElement('div');r.style.cssText='display:grid;grid-template-columns:1fr 1fr 1fr 1fr 1fr auto;gap:6px;align-items:end;margin-bottom:6px';
+    r.innerHTML=fld('Work order',sc.wo)+fld('Product',sc.prod)+fld('Qty',sc.qty,'number')+fld('Due',sc.due)+`<div class="fg" style="margin:0"><label>Status</label><select data-scs="${i}">${scOpts.map(o=>`<option value="${o}"${o===sc.status?' selected':''}>${o}</option>`).join('')}</select></div>`+delBtn(`delSched(${i})`);
+    r.querySelectorAll('input')[0].dataset.scw=i; r.querySelectorAll('input')[1].dataset.scp=i; r.querySelectorAll('input')[2].dataset.scq=i; r.querySelectorAll('input')[3].dataset.scd=i;
+    scf.appendChild(r);
+  });
+
+  g('f-hc').value=p.hc; g('f-ts').value=p.ts;
+
+  const holF=g('holForm'); holF.innerHTML='';
+  (p.holidays||[]).forEach((h,i)=>{
+    const r=document.createElement('div');r.style.cssText='display:grid;grid-template-columns:1fr 1fr auto;gap:6px;align-items:end;margin-bottom:6px';
+    r.innerHTML=fld('Name',h.name)+fld('Days',h.days)+delBtn(`delHol(${i})`);
+    r.querySelectorAll('input')[0].dataset.hn=i; r.querySelectorAll('input')[1].dataset.hd=i;
+    holF.appendChild(r);
+  });
+
+  const twF=g('trainWeekForm'); twF.innerHTML='';
+  (p.trainWeek||[]).forEach((t,i)=>{
+    const r=document.createElement('div');r.style.cssText='display:grid;grid-template-columns:1fr 1fr 1fr auto;gap:6px;align-items:end;margin-bottom:6px';
+    r.innerHTML=fld('Name',t.name)+fld('Module',t.module)+fld('Day',t.day)+delBtn(`delTrainWeek(${i})`);
+    r.querySelectorAll('input')[0].dataset.twn=i; r.querySelectorAll('input')[1].dataset.twm=i; r.querySelectorAll('input')[2].dataset.twd=i;
+    twF.appendChild(r);
+  });
+
+  const skF=g('skillForm'); skF.innerHTML='';
+  (p.skills||[]).forEach((sk,i)=>{
+    const r=document.createElement('div');r.style.cssText='display:grid;grid-template-columns:1fr 1fr auto;gap:6px;align-items:end;margin-bottom:6px';
+    r.innerHTML=fld('Name',sk.name)+fld('Skill %',sk.pct,'number')+delBtn(`delSkill(${i})`);
+    r.querySelectorAll('input')[0].dataset.skn=i; r.querySelectorAll('input')[1].dataset.skp=i;
+    skF.appendChild(r);
+  });
+
+  g('overlay').classList.add('open');
 }
 
-function val(rows, startRow, col){ return (rows[startRow]&&rows[startRow][col])||''; }
+function closeModal(){g('overlay').classList.remove('open');}
 
-function parseSheets(raw){
-  const s = parseCSV(raw.Safety);
-  const q = parseCSV(raw.Quality);
-  const d = parseCSV(raw.Delivery);
-  const p = parseCSV(raw.People);
-
-  const safetyDays = s.slice(2,5).map(r=>r[1]);
-  const crossRows = s.slice(8,15);
-  const crossStates = crossRows.map(r=>(r[1]||'future').toLowerCase());
-  const trainRows = s.slice(18,22).filter(r=>r[0]&&r[0]!=='Name');
-  const actionRows = s.slice(24,28).filter(r=>r[0]&&r[0]!=='Description');
-
-  const qMetrics = q.slice(2,7).map(r=>r[1]);
-  const rftRows = q.slice(9,14).filter(r=>r[0]&&r[0]!=='Day').map(r=>({day:r[0],val:parseFloat(r[1])||0}));
-  const defectRows = q.slice(17,22).filter(r=>r[0]&&r[0]!=='Defect type').map(r=>({name:r[0],pct:parseFloat(r[1])||0}));
-  const partsRows = q.slice(24,28).filter(r=>r[0]&&r[0]!=='Part number').map(r=>({pn:r[0],issue:r[1],date:r[2]}));
-
-  const dMetrics = d.slice(2,5).map(r=>r[1]);
-  const hourlyRows = d.slice(7,14).filter(r=>r[0]&&r[0]!=='Hour').map(r=>({h:r[0],actual:parseFloat(r[1])||0,target:parseFloat(r[2])||0}));
-  const schedRows = d.slice(16,23).filter(r=>r[0]&&r[0]!=='Work order').map(r=>({wo:r[0],prod:r[1],qty:r[2],due:r[3],status:r[4]}));
-
-  const pMetrics = p.slice(2,5).map(r=>r[1]);
-  const holRows = p.slice(7,11).filter(r=>r[0]&&r[0]!=='Name').map(r=>({name:r[0],days:r[3]}));
-  const trainWeekRows = p.slice(13,17).filter(r=>r[0]&&r[0]!=='Name').map(r=>({name:r[0],module:r[1],day:r[2]}));
-  const skillRows = p.slice(19,30).filter(r=>r[0]&&r[0]!=='Name');
-  const skillByPerson = {};
-  skillRows.forEach(r=>{ if(!skillByPerson[r[0]]) skillByPerson[r[0]]={name:r[0],total:0,count:0}; skillByPerson[r[0]].total+=parseFloat(r[2])||0; skillByPerson[r[0]].count++; });
-  const skillMatrix = Object.values(skillByPerson).map(x=>({name:x.name,pct:Math.round(x.total/x.count)}));
-
-  return {
-    safety:{days:parseInt(safetyDays[0])||0,nearMisses:parseInt(safetyDays[1])||0,cross:crossStates,training:trainRows.map(r=>({name:r[0],module:r[1],status:(r[3]||'').toLowerCase()})),actions:actionRows.map(r=>({desc:r[0],status:(r[3]||'open').toLowerCase(),age:r[2]}))},
-    quality:{rft:parseFloat(qMetrics[0])||0,ppm:parseFloat(qMetrics[1])||0,wrongParts:parseInt(qMetrics[2])||0,wrongKitted:parseInt(qMetrics[3])||0,rftTrend:rftRows,defects:defectRows,partsLog:partsRows},
-    delivery:{otd:parseFloat(dMetrics[0])||0,backlog:parseInt(dMetrics[1])||0,hourly:hourlyRows,schedule:schedRows},
-    people:{headcount:parseInt(pMetrics[0])||0,teamSize:parseInt(pMetrics[1])||0,holidays:holRows.filter(h=>h.name),trainingWeek:trainWeekRows.filter(t=>t.name),skillMatrix}
-  };
+function saveAll(){
+  D.safety.days=parseInt(g('f-days').value)||0;
+  D.safety.nm=parseInt(g('f-nm').value)||0;
+  document.querySelectorAll('[data-cross]').forEach(el=>{D.safety.cross[el.dataset.cross].status=el.value;});
+  document.querySelectorAll('[data-tn]').forEach(el=>{D.safety.training[el.dataset.tn].name=el.value;});
+  document.querySelectorAll('[data-tm]').forEach(el=>{D.safety.training[el.dataset.tm].module=el.value;});
+  document.querySelectorAll('[data-ti]').forEach(el=>{D.safety.training[el.dataset.ti].status=el.value;});
+  document.querySelectorAll('[data-ad]').forEach(el=>{D.safety.actions[el.dataset.ad].desc=el.value;});
+  document.querySelectorAll('[data-aa]').forEach(el=>{D.safety.actions[el.dataset.aa].age=el.value;});
+  document.querySelectorAll('[data-ai]').forEach(el=>{D.safety.actions[el.dataset.ai].status=el.value;});
+  D.quality.rft=parseFloat(g('f-rft').value)||0;
+  D.quality.ppm=parseInt(g('f-ppm').value)||0;
+  D.quality.wp=parseInt(g('f-wp').value)||0;
+  D.quality.wk=parseInt(g('f-wk').value)||0;
+  document.querySelectorAll('[data-rd]').forEach(el=>{D.quality.rftTrend[el.dataset.rd].day=el.value;});
+  document.querySelectorAll('[data-rv]').forEach(el=>{D.quality.rftTrend[el.dataset.rv].val=parseFloat(el.value)||0;});
+  document.querySelectorAll('[data-dfn]').forEach(el=>{D.quality.defects[el.dataset.dfn].name=el.value;});
+  document.querySelectorAll('[data-dfp]').forEach(el=>{D.quality.defects[el.dataset.dfp].pct=parseInt(el.value)||0;});
+  document.querySelectorAll('[data-ppn]').forEach(el=>{D.quality.parts[el.dataset.ppn].pn=el.value;});
+  document.querySelectorAll('[data-ppi]').forEach(el=>{D.quality.parts[el.dataset.ppi].issue=el.value;});
+  document.querySelectorAll('[data-ppd]').forEach(el=>{D.quality.parts[el.dataset.ppd].date=el.value;});
+  D.delivery.otd=parseInt(g('f-otd').value)||0;
+  D.delivery.bl=parseInt(g('f-bl').value)||0;
+  document.querySelectorAll('[data-hh]').forEach(el=>{D.delivery.hourly[el.dataset.hh].h=el.value;});
+  document.querySelectorAll('[data-ha]').forEach(el=>{D.delivery.hourly[el.dataset.ha].actual=parseInt(el.value)||0;});
+  document.querySelectorAll('[data-ht]').forEach(el=>{D.delivery.hourly[el.dataset.ht].target=parseInt(el.value)||0;});
+  document.querySelectorAll('[data-scw]').forEach(el=>{D.delivery.schedule[el.dataset.scw].wo=el.value;});
+  document.querySelectorAll('[data-scp]').forEach(el=>{D.delivery.schedule[el.dataset.scp].prod=el.value;});
+  document.querySelectorAll('[data-scq]').forEach(el=>{D.delivery.schedule[el.dataset.scq].qty=el.value;});
+  document.querySelectorAll('[data-scd]').forEach(el=>{D.delivery.schedule[el.dataset.scd].due=el.value;});
+  document.querySelectorAll('[data-scs]').forEach(el=>{D.delivery.schedule[el.dataset.scs].status=el.value;});
+  D.people.hc=parseInt(g('f-hc').value)||0;
+  D.people.ts=parseInt(g('f-ts').value)||0;
+  document.querySelectorAll('[data-hn]').forEach(el=>{D.people.holidays[el.dataset.hn].name=el.value;});
+  document.querySelectorAll('[data-hd]').forEach(el=>{D.people.holidays[el.dataset.hd].days=el.value;});
+  document.querySelectorAll('[data-twn]').forEach(el=>{D.people.trainWeek[el.dataset.twn].name=el.value;});
+  document.querySelectorAll('[data-twm]').forEach(el=>{D.people.trainWeek[el.dataset.twm].module=el.value;});
+  document.querySelectorAll('[data-twd]').forEach(el=>{D.people.trainWeek[el.dataset.twd].day=el.value;});
+  document.querySelectorAll('[data-skn]').forEach(el=>{D.people.skills[el.dataset.skn].name=el.value;});
+  document.querySelectorAll('[data-skp]').forEach(el=>{D.people.skills[el.dataset.skp].pct=parseInt(el.value)||0;});
+  localStorage.setItem(DKEY,JSON.stringify(D));
+  closeModal(); render();
 }
 
-async function loadData(){
-  const now = new Date();
-  const timeStr = now.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
-  const dateStr = now.toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short',year:'numeric'});
-  document.getElementById('boardSub').textContent = `${settings.teamName||'Subs'} — ${dateStr}`;
+function addTrain(){D.safety.training.push({name:'',module:'',status:'due'});openModal();showTab('safety');}
+function delTrain(i){D.safety.training.splice(i,1);openModal();showTab('safety');}
+function addAction(){D.safety.actions.push({desc:'',status:'open',age:''});openModal();showTab('safety');}
+function delAction(i){D.safety.actions.splice(i,1);openModal();showTab('safety');}
+function addDefect(){D.quality.defects.push({name:'',pct:0});openModal();showTab('quality');}
+function delDefect(i){D.quality.defects.splice(i,1);openModal();showTab('quality');}
+function addRft(){D.quality.rftTrend.push({day:'',val:0});openModal();showTab('quality');}
+function delRft(i){D.quality.rftTrend.splice(i,1);openModal();showTab('quality');}
+function addPart(){D.quality.parts.push({pn:'',issue:'',date:''});openModal();showTab('quality');}
+function delPart(i){D.quality.parts.splice(i,1);openModal();showTab('quality');}
+function addHour(){D.delivery.hourly.push({h:'',actual:0,target:55});openModal();showTab('delivery');}
+function delHour(i){D.delivery.hourly.splice(i,1);openModal();showTab('delivery');}
+function addSched(){D.delivery.schedule.push({wo:'',prod:'',qty:0,due:'',status:'planned'});openModal();showTab('delivery');}
+function delSched(i){D.delivery.schedule.splice(i,1);openModal();showTab('delivery');}
+function addHol(){D.people.holidays.push({name:'',days:''});openModal();showTab('people');}
+function delHol(i){D.people.holidays.splice(i,1);openModal();showTab('people');}
+function addTrainWeek(){D.people.trainWeek.push({name:'',module:'',day:''});openModal();showTab('people');}
+function delTrainWeek(i){D.people.trainWeek.splice(i,1);openModal();showTab('people');}
+function addSkill(){D.people.skills.push({name:'',pct:0});openModal();showTab('people');}
+function delSkill(i){D.people.skills.splice(i,1);openModal();showTab('people');}
 
-  if(!settings.sheetId){
-    renderData(DEMO);
-    document.getElementById('refreshInfo').textContent = 'Demo mode — connect your Sheet in Settings';
-    return;
-  }
-  try {
-    const data = await fetchFromSheets(settings.sheetId);
-    renderData(data);
-    document.getElementById('refreshInfo').textContent = `Last updated: ${timeStr}`;
-  } catch(e){
-    renderData(DEMO);
-    document.getElementById('refreshInfo').textContent = 'Sheet error — showing demo data';
-  }
-}
-
-function startRefresh(){
-  if(refreshTimer) clearInterval(refreshTimer);
-  loadData();
-  const mins = parseInt(settings.refreshMins)||5;
-  refreshTimer = setInterval(loadData, mins*60*1000);
-}
-
-startRefresh();
+render();
 </script>
 </body>
 </html>
